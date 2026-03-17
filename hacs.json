@@ -1,4 +1,6 @@
 {
   "homeassistant": "2025.1.0",
-  "name": "Petkit"
+  "name": "Petkit",
+  "zip_release": true,
+  "filename": "petkit.zip"
 }
