@@ -710,7 +710,7 @@ SENSOR_MAPPING: dict[type[PetkitDevices], list[PetKitSensorDesc]] = {
             native_unit_of_measurement=UnitOfMass.KILOGRAMS,
             value=lambda pet: (
                 round((pet.last_measured_weight / 1000), 2)
-                if pet.last_measured_weight
+                if pet.last_measured_weight is not None
                 else None
             ),
             restore_state=True,
