@@ -27,7 +27,6 @@ _SIGN_EXPIRATION = timedelta(days=365)
 _GO2RTC_API_PATH = "api/streams"
 _REQUEST_TIMEOUT = ClientTimeout(total=10)
 _INFO_TIMEOUT = ClientTimeout(total=5)
-_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
 
 
 class PetkitGo2RTCStreamManager:
@@ -313,24 +312,14 @@ class PetkitGo2RTCStreamManager:
         return payload
 
     def _ha_source_base_url(self) -> str | None:
-        """Return the Home Assistant base URL reachable from an external go2rtc."""
-        try:
-            base_url = get_url(self.hass, prefer_external=False)
-        except NoURLAvailableError:
-            base_url = None
-
-        if base_url:
-            parts = urlsplit(base_url)
-            if parts.hostname not in _LOOPBACK_HOSTS:
-                return base_url.rstrip("/")
-
-        try:
-            external_url = get_url(self.hass, prefer_external=True)
-        except NoURLAvailableError:
-            external_url = None
-        if external_url:
-            return external_url.rstrip("/")
-
+        """Return the Home Assistant base URL reachable from go2rtc."""
+        for prefer_external in (False, True):
+            try:
+                url = get_url(self.hass, prefer_external=prefer_external)
+            except NoURLAvailableError:
+                continue
+            if url:
+                return url.rstrip("/")
         return None
 
     def _resolve_camera(self, target):
