@@ -138,6 +138,7 @@ async def async_setup_entry(
         hass=hass,
         coordinator=coordinator,
     )
+    await notification_manager.async_start()
     entry.runtime_data.notification_manager = notification_manager
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
